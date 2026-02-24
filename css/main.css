@@ -1,0 +1,132 @@
+/* mousey.network main.css
+ * 2025-11-10. navbar theme switcher, basic layout
+ *
+ * please send help css is a mystery >.< 🐁
+ */
+
+:root {
+    color-scheme: dark light;
+    --dark-label: #9a9a9a; --dark-label-active: #ddd;
+    --light-label: #8e8e8e; --light-label-active: #555;
+
+    /* theme switch radio box - only one is :checked */
+    &:has(#system-scheme:checked) { /* default value */
+        @media (prefers-color-scheme: dark) {
+            --label: var(--dark-label);
+            --label-active: var(--dark-label-active);
+            label:has(#dark-scheme) { display: none; }
+        }
+        @media (prefers-color-scheme: light) {
+            --label: var(--light-label);
+            --label-active: var(--light-label-active);
+            label:has(#light-scheme) { display: none; }
+        }
+    }
+
+    &:has(#dark-scheme:checked) { /* explicit preference */
+        color-scheme: only dark;
+        --label: var(--dark-label);
+        --label-active: var(--dark-label-active);
+    }
+
+    &:has(#light-scheme:checked) {
+        color-scheme: only light;
+        --label: var(--light-label);
+        --label-active: var(--light-label-active);
+    }
+}
+
+body {
+    width: calc(100% - 2em); max-width: 35em;
+    margin: 0 auto; padding-bottom: 3em;
+    font-family: Tahoma, Verdana, Arial, sans-serif;
+}
+
+.skip {
+    position: absolute; overflow: hidden;
+    left: -99px; width: 1px; height: 1px;
+
+    &:focus { position: static; left: auto; width: auto; height: auto; }
+}
+
+a {
+    text-decoration: none;
+
+    &:focus { outline: 3px solid highlight; outline-offset: 3px; }
+    &:hover, &:focus { text-decoration: underline; }
+}
+
+nav {
+    display: flex; justify-content: flex-end;
+    padding-top: 1em; gap: 1em;
+
+    a:last-of-type { margin-right: auto; }
+    label { /* navbar labels visually appear as links */
+        color: linktext;
+
+        &:focus-within {
+            outline: 3px solid highlight; outline-offset: 3px;
+        }
+
+        &:hover, &:focus-within {
+            text-decoration: underline; cursor: pointer;
+        }
+
+        &:has(input:checked) { display: none; } /* hide active scheme */
+
+        input, input:checked { /* hide radio boxes... */
+            position: absolute; appearance: none;
+            width: 1em; height: 1em; padding: 0; border: 0; margin: 0;
+        }
+    }
+
+    /* ...unless radio boxes have focus */
+    &:has(label:focus-within) input { appearance: auto; }
+}
+
+.entries {
+    list-style: none; padding-left: 1.5em; padding-right: 1.5em;
+
+    h2 { display: inline; font-size: 1em; font-weight: 600; }
+    time { padding-right: 0.35em; color: var(--label); }
+    & > li:hover time,
+    & > li:focus-within time { color: var(--label-active); }
+}
+
+.published { color: var(--label-active); }
+.modified { color: var(--label); }
+
+article {
+    ol, ul { padding-inline-start: 2em; }
+    p, li { line-height: 1.5; }
+}
+
+.code {
+    margin: 0;
+    box-shadow: -4px 0 1px -1px var(--label);
+
+    pre {
+        padding-left: 3px;
+        /* box-shadow: -4px 0 1px -1px var(--label); */
+        font-size: 75%;
+        overflow-x: auto;
+    }
+
+    figcaption {
+        margin-left: 4px;
+        padding-left: 4px;
+        box-shadow: -2px 0 1px -1px var(--label);
+    }
+
+    kbd {
+        font-weight: bold;
+    }
+
+    .prompt {
+        color: var(--label-active);
+    }
+
+    .comment {
+        color: var(--label);
+    }
+}
