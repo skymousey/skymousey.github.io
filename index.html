@@ -38,7 +38,50 @@
    <p>*one of the things i found out quick is that having a usb flash
    drive is pretty much essential since you can't save files on
    the public computers, and although using cloud storage is possible,
-   it would make everything so much more slow every day.<p>
+   it would make everything so much more slow every day.</p>
+
+   <h2>background on me</h2>
+   <p>i have a technical background, so i needn't learn this stuff,
+   and it would have taken much longer if that were true. so a more
+   realistic approximation is learning how to guide someone without
+   resources but with independent drive to learn this stuff to have
+   an experiment playground and be able to express their creativity
+   through the web.</p>
+
+   <h2>day one</h2>
+   <p>everything always starts with an email address. one thing
+   about library computers is that their public IP addresses can
+   have really low reputation, or else be used to sign up for many
+   accounts in the free providers (which also triggers anti-bot
+   stuff), so it can be a bit of a dice roll when registering
+   accounts. i used protonmail: it's free and easy, and gives
+   some space in their drive.</p>
+
+   <p>next, i signed up for gitlab and github. the idea is to
+   have some space in git repos to put code, and to use the free
+   tier ci/cd to do deployments. signing up for both essentially
+   doubles the quotas there and they can serve as a backup space
+   with private repos.</p>
+
+   <p>i also signed up for cloudflare. their workers are where
+   i plan to write any code that requires server-side compute.
+   this was one of the first stumbling blocks of the project:
+   wrangler. i need to use their tool to interact with most of
+   their api and sdk and it's not like i can run a docker
+   or random node.js packages from the library's windows computer.</p>
+
+   <p>so the next step was to find somewhere where i can get a
+   basic shell that has npm or that i can stick npm in.</p>
+
+   <p>at first i tried jslinux and its sister at copy.sh.
+   although these tools do give you a linux shell (and root),
+   they are painfully slow (more on that in a sec), and the
+   network access is seriously limited: there's a websocket
+   proxy but it is capped at 20kB/s which means even if you
+   can get npm in (copy.sh has a node.js docker container in
+   its archlinux distro), you can't run <pre><code>npm i</code></pre>
+   because it simply takes too long to get and uncompress
+   all the dependencies.</p>
   </article>
  </main>
 </body>
