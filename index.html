@@ -35,17 +35,17 @@
     nice</li>
    </ul>
 
-   <p>*one of the things i found out quick is that having a usb flash
-   drive is pretty much essential since you can't save files on
-   the public computers, and although using cloud storage is possible,
-   it would make everything so much more slow every day.</p>
+   <p>*one of the things i found is having a usb flash drive is
+   pretty much essential since you can't save files on the public
+   computers, and although using cloud storage is possible, it
+   makes everything much slower every day.</p>
 
    <h2>background on me</h2>
-   <p>i have a technical background, so i needn't learn this stuff,
-   and it would have taken much longer if that were true. so a more
-   realistic approximation is learning how to guide someone without
-   resources but with independent drive to learn this stuff to have
-   an experiment playground and be able to express their creativity
+   <p>i have a technical background, so i needn't learn the basics,
+   and it would take much longer otherwise. so a more realistic
+   approximation is learning how to guide someone without resources
+   but with independent drive to learn this stuff to have an
+   experiment playground and be able to express their creativity
    through the web.</p>
 
    <h2>day one</h2>
@@ -66,26 +66,162 @@
    <p>i also signed up for cloudflare. their workers are where
    i plan to write any code that requires server-side compute.
    this was one of the first stumbling blocks of the project:
-   wrangler. i need to use their tool to interact with most of
-   their api and sdk and it's not like i can run a docker
-   or random node.js packages from the library's windows computer.</p>
+   <code>wrangler</code>. i need to use their tool to interact
+   with most of their api and sdk and it's not like i can run a
+   docker container or random node.js packages from the
+   library's windows computer.</p>
 
    <p>so the next step was to find somewhere where i can get a
-   basic shell that has npm or that i can stick npm in.</p>
+   basic shell that has <code>npm</code> or that i can stick
+   <code>npm</code> in.</p>
 
-   <p>at first i tried jslinux and its sister at copy.sh.
-   although these tools do give you a linux shell (and root),
-   they are painfully slow (more on that in a sec), and the
-   network access is seriously limited: there's a websocket
-   proxy but it is capped at 20kB/s which means even if you
-   can get npm in (copy.sh has a node.js docker container in
-   its archlinux distro), you can't run <pre><code>npm i</code></pre>
-   because it simply takes too long to get and uncompress
-   all the dependencies.</p>
+   <p>at first i tried <a href="https://bellard.org/jslinux/">
+   jslinux</a> and its sister at <a href="https://copy.sh/v86/">
+   copy.sh</a> although these tools do give you a linux shell
+   (and root), they are painfully slow (more on that in a
+   sec), and the network access is seriously limited: there's
+   a websocket proxy but it is capped at 20kB/s which means
+   even if you can get <code>npm</code> in (copy.sh has a
+   node.js docker container in its archlinux distro), you
+   can't run <code>npm i</code> because it simply takes too
+   long to get and uncompress all the dependencies.</p>
 
   <h2>day two</h2>
+  <p>i wanted to figure out a development environment for
+  code and web tools like curl/httpie, and get a shell
+  somewhere.</p>
+
+  <p>when i was a teenager, i had a similar struggle as i
+  wasn't allowed to spend any money online. in those days,
+  i signed up for <a href="https://sdf.org">sdf.org</a>, but
+  coming back to it, i find that the free shell account you
+  can get is extremely limited (you can't even use it to
+  <code>ssh</code> outbound), so that was a bust.</p>
+
+  <p>instead i started working on getting a shell at
+  <a href="https://blinkenshell.org">blinkenshell</a>, which
+  looks promising but will take some time to use since you need
+  to be vouched by existing members and lurk in irc awhile to get
+  there.</p>
+
+  <p>in the meantime, i wanted to get some basic tools for writing
+  code. recently, i've been using
+  <a href="https://helix-editor.com/">the helix editor</a>,
+  <code>hx</code>, which is a rust-based lightweight vim-like.</p>
+
+  <p>i tried to use the standalone windows binary, but (of course)
+  you can't run any non-preinstalled programs on the library
+  computers, so instead i spent a bit of time preparing a custom
+  package that i could upload to jslinux and use there.</p>
+
+  <p>it turns out, jslinux has this cool feature where you can
+  "upload" files to the vm, it's local-to-browser so it's very fast
+  and i can store the package i make on a usb stick along with a
+  script to "install" it to the vm. since <code>hx</code> is staticly
+  compiled, there are no dependencies, so it is well suited for
+  dropping into the x64 alpine distro.</p>
+
+  <p>now a word on vm speed: i made a custom helix package from the
+  <a href="https://pkgs.alpinelinux.org/package/edge/community/x86/helix">
+  apk that's in the alpine repos</a> by removing all the runtime
+  grammars for languages i don't intend to use to minimise the filesize.
+  turns out, alpine apk's are just <code>tar.gz</code> files, and
+  surprisingly (to me anyway), windows supports making gzip archives
+  natively through the file explorer. i kept all the themes in because
+  they're tiny, although it's pointless since the console on jslinux
+  doesn't seem to do non-basic colours. but the binary itself runs
+  great even in this limited environment, which is awesome.</p>
+
+  <p>here is a snippet showing the decompression time:</p>
+  <figure class="code"><pre>
+<samp><span class="prompt">localhost:~#</span> <kbd>time tar -xvzf helix-25.07.1-r1.apk</kbd></samp>
+<code>.SIGN.RSA.alpine-devel@lists.alpinelinux.org-6165ee59.rsa.pub
+.PKGINFO
+.post-install
+.post-upgrade
+usr/
+usr/bin/
+usr/bin/hx
+usr/share/
+usr/share/applications/
+usr/share/applications/Helix.desktop
+usr/share/helix/
+usr/share/helix/runtime/
+usr/share/helix/runtime/themes/
+usr/share/helix/runtime/themes/acme.toml
+usr/share/helix/runtime/themes/adwaita-dark.toml</code>
+<span class="comment">...</span>
+<code>usr/share/helix/runtime/themes/yo_light.toml
+usr/share/helix/runtime/themes/zed_onedark.toml
+usr/share/helix/runtime/themes/zed_onelight.toml
+usr/share/helix/runtime/themes/zenburn.toml
+usr/share/helix/runtime/tutor
+usr/share/icons/
+usr/share/icons/hicolor/
+usr/share/icons/hicolor/scalable/
+usr/share/icons/hicolor/scalable/apps/
+usr/share/icons/hicolor/scalable/apps/Helix.svg
+real    0m 12.14s
+user    0m 6.93s
+sys     0m 4.98s</code>
+<samp><span class="prompt">localhost:~#</span> █</samp></pre>
+  <figcaption>decompression time for custom helix editor apk
+  (about 5 MiB without the runtime grammars).</figcaption>
+  </figure>
+
+  <p>i signed up for <a href="https://vfsync.org/">vfsync</a> so
+  that i wouldn't have to do this every time, chucking the helix
+  binary in <code>~/.local</code>, and preparing a basic
+  <code>.bashrc</code>, cloning the repos, and syncing an encrypted
+  ssh key so i don't have to upload that every time.</p>
+
+  <p>i write here what actually worked; in practice this took some
+  trial and error because the online linux vms each have their own
+  quirks &mdash; jslinux alpine is musl-based x64; copy.sh is x86
+  only (turns out not that much stuff is build for 32-bit platforms
+  anymore).</p>
 
   <h2>day three</h2>
+  <p>today i wrote my initial commit to skymousey.github.io
+  (this repo!) so that people know what i'm up to. i'd been taking
+  notes in notepad.exe before this point so i had a log of what i'd
+  tried. turns out, the two hour window you get to use a library
+  computer is not a lot when you also want to write longform text.</p>
+
+  <p>alongside that, i started having a look at the readme's for
+  gitlab ci/cd, since i plan on using that for deploying code to
+  the live cloudflare workers.</p>
+
+  <p>i used the helix editor i had prepared to write all the code
+  and markup used in this blogpost thing, and if you want to follow
+  along, a quick tip is run to helix inside gnu screen, because its
+  autocomplete is a bit buggy in the plain text console.</p>
+
+  <p>also <code>screen</code> is handy for splitting the window and
+  having a shell alongside the editor.</p>
+
+  <h2>day four</h2>
+  <p>on day three, i had to write my notes down rather hastily
+  because i was also setting up the css / html markup, so the notes
+  ended up being pretty rough.</p>
+
+  <p>so today i wanted to try out the <a href="https://vscode.dev/">
+  online-based vscode</a> at vscode.dev, which provides a nice and
+  familiar code environment, and it's easier to see what i'm
+  typing.</p>
+
+  <p>so i went through fixing typos, finishing updating the notes
+  for the last two days, and hanging about in irc a bit, and i
+  didn't get any further on the actual code of the project at all,
+  but i am glad i tried vscode.</p>
+
+  <p>i did investigate a bit whether i could use powershell tools
+  for network access like <code>ssh.exe</code>, but all outbound
+  network requests must go through the web proxy, and i don't think
+  the web proxy would enjoy passing ssh to port 443 since it seems
+  to interrogate/mess with the tls certs of the target on first
+  connection.</p>
+
   </article>
  </main>
 </body>
